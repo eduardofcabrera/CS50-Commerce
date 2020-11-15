@@ -1,0 +1,88 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    {% if message %}
+        <p id="listingCategory">{{ message }}</p>
+    {% endif %}
+        
+
+    <p id="listingTitle">{{ listing.Title }}</p> 
+      
+
+    {% if interest and not ownerIn and not anonymous%}
+        <a class="watchlist" href="{% url 'addRemoveWatchList' auctionID 'remove' %}"><p>Remove of the watchlist</p></a>
+    {% elif not interest and not ownerIn and not anonymous %}
+        <a class="watchlist" href="{% url 'addRemoveWatchList' auctionID 'add' %}"><p>Add to the watchlist</p></a>
+    {% elif not anonymous %}
+        <a class="watchlist" href="{% url 'finishListing' auctionID %}">Finish listing</a>
+    {% endif %}
+                 
+    {% if listing.category %}
+        <p id="listingCategory">Category: <a href="{% url 'category' listing.category %}">{{ listing.category }}</a></p>
+        {% else %}
+        <p>No category</p>
+    {% endif %}
+    <p id="listingCategory">Date: {{ listing.auction_date }}</p>
+    <p id="listingCategory">Owner: {{ owner }} </p>
+    <p id="listingCategory">First bid: ${{ listing.first_bid }}</p>
+
+    
+    {% if bidMax.value %}
+    <p id="listingCategory">Current bid: ${{ bidMax.value }}</p>
+    {% else %}
+    <p id="listingCategory">Current bid: no bids yet</p>
+    {% endif %}
+        
+    {% if listing.image_url %}
+        <img src="{{ listing.image_url }}" id="listingImagePage">
+    {% else %}
+        <p>No image</p>
+    {% endif %}
+    <div id="descriptionDivPage">
+        <p id="listingDescriptionPage">Description: {{ listing.description }}</p>
+    </div>
+
+    {% if not ownerIn or not anonymous %}
+    <div class="makeBidDiv">
+        <p id="makeBidP">Make a bid!</p>
+        <div id="bidForm">
+            <form method="post">
+            {% csrf_token %}
+            {% for field in bidForm %}
+                <p id="textFormMakeBid">{{ field.label }}:</p>
+                <div id="fieldFormMakeBid">
+                    {{ field }}
+                </div>
+            {% endfor %}
+                <div id="inputFormMakeBid">
+                    <input id="buttonMakeBid" type="submit" value="Make a Bid!">
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div id="commentSection">
+        <p id="commentTitle">Comment Section:</p>
+        <div id="commentDiv">
+            <form method="post" action="{% url 'makeComment' auctionID %}">
+                {% csrf_token %}
+                {% for field in commentForm %}
+                <input id="inputComment" {{ field }} >   
+                {% endfor %}
+                <input id="buttonMakeBid" type="submit" value="Comment">
+            </form>
+        </div>
+        
+        {% for comment in comments %}
+        <div class="commentDiv">
+            <p><strong>{{ comment.1 }}({{ comment.0.comment_date }}): </strong></p>
+            <p>{{ comment.0.content }}</p>
+        </div>
+        {% endfor %}
+    </div>
+        
+
+
+{% endblock body %}

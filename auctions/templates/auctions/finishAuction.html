@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}    
+
+<p id="finishTitle">Listing Finished</p>
+
+<p class="finishText"><strong>Listing:</strong> {{ listing.Title }}</p>
+<p class="finishText"><strong>Final Bid:</strong> ${{ bidMax.value }}</p>
+<p class="finishText"><strong>Buyer:</strong> {{ winner }}</p>
+
+{% endblock body %}

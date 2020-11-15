@@ -1,0 +1,50 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <div id="noticeDiv">
+    {% for auction in noticeList  %}
+        <div id="eachNoticeDiv">
+        <p class="noticeText">You won the <strong>{{ auction.0 }}</strong> auction!</p>
+        <p class="noticeText">The final bid was <strong>${{ auction.1.value }}</strong></p>
+        </div>
+    {% empty %}
+    <div id="eachNoticeDiv">
+        <p class="noticeText">No notifications...</p>
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+        
+
+    {% for listing in listings %}
+    <a class="aDiv" href="{% url 'auctionPage' listing.pk %}">
+        <div id="listingDiv">
+            <p id="listingTitle"> {{ listing.Title }} </p>
+            {% if listing.category %}
+            <p id="listingCategory">Category: {{ listing.category }} </p>
+            {% else %}
+            <p>No category</p>
+            {% endif %}
+            {% if listing.image_url %}
+            <img src="{{ listing.image_url }}" id="listingImage">
+            {% else %}
+            <p>No image</p>
+            {% endif %}
+            <p id="listing_first_bid"><strong>First bid:</strong> ${{ listing.first_bid }}</p>
+            <div id="descriptionDiv">
+                <p id="listingDescription"><strong>Description:</strong> {{ listing.description }}</p>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <p id="listingCategory">No listings</p>
+    {% endfor %}
+
+{% endblock %}
